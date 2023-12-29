@@ -1,0 +1,238 @@
+#: import MDRaisedButton kivymd.uix.button.MDRaisedButton
+#: import MDCheckbox kivymd.uix.selectioncontrol.MDCheckbox
+#:import MDLabel kivymd.uix.label.MDLabel
+
+# main.kv
+
+#******************************************************
+
+BoxLayout:
+    orientation: 'vertical'
+    pos_hint: {'center_x': 0.5,'center_y': 0.5}
+    ScreenManager:
+        id:screen_manager
+
+        LoginScreen:
+            name:'login'
+            manager:screen_manager 
+        RoleSelectionScreen:
+            name:'role_selection'
+            manager:screen_manager
+        TeachersScreen:
+            name:'teachers'
+        StudentsScreen:
+            name:'students'
+        RegisterScreen:
+            name:'register'
+        LessonsScreen:
+            name:'lessons'
+        
+        
+
+<RoleSelectionScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        MDLabel:
+            text: 'Select Your Role:'
+            halign:'center'
+            theme_text_color:'Secondary'
+            font_style:'H6'
+        
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height:dp(48)
+
+            MDCheckbox:
+                id:teacher_checkbox
+                group:'role'
+                size_hint_x: None
+                width:dp(48)
+                on_active:root.on_checkbox_active('teacher', self.active)
+            
+            MDLabel:
+                text:'Teacher'
+
+            MDCheckbox:
+                id:teacher_checkbox
+                group:'role'
+                size_hint_x: None
+                width:dp(48)
+                on_active:root.on_checkbox_active('student', self.active)
+            
+            MDLabel:
+                text:'Student'
+
+        MDRaisedButton:
+            text:'Next'
+            pos_hint: {'center_x': 0.5}
+            on_press: root.switch_to_selected_screen()
+
+<LoginScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        size_hint: None, None
+        
+        pos_hint: {'center_x': 0.5,'center_y': 0.5}
+        size: dp(300), dp(200)
+
+
+        MDTextField:
+            hint_text: "Username"
+            helper_text: "Enter your username"
+            helper_text_mode: "on_focus"
+            size_hint_x: None
+            width: dp(250)
+
+        MDTextField:
+            hint_text: "Password"
+            helper_text: "Enter your password"
+            helper_text_mode: "on_focus"
+            password: True
+            size_hint_x: None
+            width: dp(250)
+
+        MDRaisedButton:
+            text: "Login"
+            pos_hint: {'center_x': 0.5}
+            on_press: root.switch_to_role_selection_screen()
+
+       
+<TeachersScreen>:
+    MDNavigationLayout:
+        ScreenManager:
+            id:screen_manager
+            MDScreen:
+                name: 'dashboard_screen'
+                BoxLayout:
+                    orientation: 'vertical'
+                    # spacing: '10dp'
+                    # padding: ('16dp', '16dp', '16dp', '16dp')
+
+                    MDTopAppBar:
+                        title:"Teachers\'s Dashboard"
+                        left_action_items:[["menu", lambda x:nav_drawer.set_state('open')]]
+                    
+                    MDNavigationLayout:
+                        size_hint_x: .5
+                        pos_hint: {'center_x': .5,'center_y': 0.5}
+
+            MDScreen: 
+                name: 'lesson_screen'
+            MDScreen:
+                name:'activity_screen'
+            MDScreen:
+                name:'messaging_screen'
+            MDScreen:
+                name:'progress_screen'
+
+
+        
+    # MDNavigationLayout:
+    #     ScreenManager:
+    #         id:screen_manager
+    #         MDScreen:
+    #             name: 'Home'
+    #             MDLabel:
+    #                 text:'Edit Content'
+
+        MDNavigationDrawer:
+            id:nav_drawer
+
+            # DAshDrawer:
+            orientation: 'vertical'
+            MDBoxLayout:
+                md_bg_color: [.1,.7,.8,.5]
+                radius:(0,0,30,30)
+                size_hint: 1, .25
+                pos_hint: {'center_x': 0.5,'center_y': 0.88}
+                canvas:
+                    Color:
+                        rgba:(1,1,1,1)
+                    Rectangle:
+                        pos:self.pos
+                        size: self.size
+                        source:'pietsOnlinenobg.png'
+            MDBoxLayout:
+                orientation: 'vertical'
+                MDBoxLayout:
+                    orientation:'vertical'
+                    spacing: '10dp'
+                    padding:dp(16)
+                    MDScrollView:
+                        MDList:
+                            OneLineIconListItem:
+                                text: "Create/Edit Lesson"
+                                on_release: root.create_edit_lesson();root.ids.nav_drawer.set_state('close')
+                                
+                                IconLeftWidget:
+                                    icon: 'pencil-circle-outline'
+
+
+                            OneLineIconListItem:
+                                text: "View Students Activity"
+                                on_release: root.view_students_activity();nav_drawer.set_state('close')
+                                
+                                IconLeftWidget:
+                                    icon: 'flash-red-eye'
+
+                            OneLineIconListItem:
+                                text: "Messaging"
+                                on_release: root.messaging();nav_drawer.set_state('close')
+                                
+                                IconLeftWidget:
+                                    icon: 'message-reply-text'
+
+                            OneLineIconListItem:
+                                text: "Check Students Progress"
+                                on_release: root.check_students_progress();nav_drawer.set_state('close')
+                                
+                                IconLeftWidget:
+                                    icon: 'chart-bar-stacked'
+
+                            OneLineIconListItem:
+                                text: "Notification bell"
+                                on_release: root.show_notifications();nav_drawer.set_state('close')
+                                
+                                IconLeftWidget:
+                                    icon:'bell-alert'
+                                    
+
+                            OneLineIconListItem:
+                                text: "Logout"
+                                on_press: root.logout()
+                                
+                                IconLeftWidget:
+                                    icon: 'logout'
+
+                    
+# ***** DASHBOARD SCREENS CLASSES  *****
+<LessonCreateScreen>:
+    name: 'lesson_screen'
+    FloatLayout:
+        orientation:'vertical'
+        spacing: '10dp'
+        padding: ('16dp')
+        md_bg_color:[.1,.7,.8,.5]
+        MDLabel:
+            text: 'The lesson Screen'
+            pos_hint: {'center_x': 0.5,'center_y': 0.5}
+<ActivityScreen>:
+    name:'activity_screen'
+<MessagingScreen>:
+    name:'messaging_screen'
+<ProgressScreen>:
+    name:'progress_screen'
+
+# *****   ******************************
+
+
+<LessonsScreen>:
+    FloatLayout:
+        orientation:'vertical'
+        spacing: '10dp'
+        padding: ('16dp')
+        MDRaisedButton:
+            text: 'Back to Dashboard'
+            pos_hint: {'center_x': 0.5,'center_y': 0.5}
+            on_press: app.switch_screen('dashboard_screen')
